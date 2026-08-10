@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'java'
+        label 'docker'
     }
 
     options {
@@ -17,6 +17,7 @@ pipeline {
 
     environment {
         APP_NAME = 'jenkins-springboot'
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -49,20 +50,26 @@ pipeline {
                 sh 'mvn package -DskipTests'
 
                 archiveArtifacts(
-                                artifacts: 'target/*.jar',
-                                fingerprint: true
-                            )
+                    artifacts: 'target/*.jar',
+                    fingerprint: true
+                )
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh "docker build -t banking-service:${BUILD_NUMBER} ."
             }
         }
     }
 
     post {
         success {
-            echo "${APP_NAME} CI succeeded."
+            echo "Docker image ${APP_NAME}:${IMAGE_TAG} built successfully."
         }
 
         failure {
-            echo "${APP_NAME} CI failed."
+            echo "Pipeline failed."
         }
 
         always {
