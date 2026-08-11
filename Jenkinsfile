@@ -17,7 +17,7 @@ pipeline {
 
     environment {
         APP_NAME = 'jenkins-springboot'
-        IMAGE_TAG = "${BUILD_NUMBER}"
+//         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -45,6 +45,20 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                waitForQualityGate abortPipeline: true
+            }
+        }
+
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
@@ -56,16 +70,17 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                sh "docker build -t banking-service:${BUILD_NUMBER} ."
-            }
-        }
+//         stage('Docker Build') {
+//             steps {
+//                 sh "docker build -t jenkins-springboot:${BUILD_NUMBER} ."
+//             }
+//         }
     }
 
     post {
         success {
-            echo "Docker image ${APP_NAME}:${IMAGE_TAG} built successfully."
+//             echo "Docker image ${APP_NAME}:${IMAGE_TAG} built successfully."
+               echo "Pipeline built successfully"
         }
 
         failure {
