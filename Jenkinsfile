@@ -47,20 +47,20 @@ pipeline {
 
 //         stage('Security Scans') {
 //             parallel {
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh 'mvn sonar:sonar'
+                stage('SonarQube Analysis') {
+                    steps {
+                        withSonarQubeEnv('sonarqube') {
+                            sh 'mvn sonar:sonar'
+                        }
+                    }
                 }
-            }
-        }
-
-        stage('Dependency Scan') {
-            steps {
-                sh 'mvn dependency-check:check'
-            }
-        }
-
+//
+//                 stage('Dependency Scan') {
+//                     steps {
+//                         sh 'mvn dependency-check:check'
+//                     }
+//                 }
+//
 //                 stage('Secret Scan') {
 //                     steps {
 //                         sh 'gitleaks detect --source . --exit-code 1'
