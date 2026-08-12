@@ -99,6 +99,23 @@ pipeline {
                 sh "docker build -t jenkins-springboot:${BUILD_NUMBER} ."
             }
         }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker rm -f springboot-app || true
+
+                    docker run -d --name springboot-app -p 8081:8090 jenkins-springboot:${BUILD_NUMBER}
+
+                    sleep 10
+
+                    docker ps --filter "name=springboot-app"
+
+                    docker logs springboot-app
+                '''
+            }
+        }
+
 //
 //         stage('Container Security Scan') {
 //             steps {
@@ -109,7 +126,7 @@ pipeline {
 
     post {
         success {
-            echo "Docker image ${APP_NAME}:${IMAGE_TAG} built successfully."
+            echo "Docker ${APP_NAME}:${IMAGE_TAG} runs successfully."
                echo "Pipeline built successfully"
         }
 
