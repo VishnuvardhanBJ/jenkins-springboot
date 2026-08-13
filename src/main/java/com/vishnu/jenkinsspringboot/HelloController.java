@@ -8,6 +8,6 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(){
-        return "Hello, this url is for testing jenkins-springboot ";
+        return "Hello, this url is for testing jenkins-springboot";
     }
 }
