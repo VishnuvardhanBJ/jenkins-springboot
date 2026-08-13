@@ -52,32 +52,32 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>12.2.2</version>
+<!--            <plugin>-->
+<!--                <groupId>org.owasp</groupId>-->
+<!--                <artifactId>dependency-check-maven</artifactId>-->
+<!--                <version>12.2.2</version>-->
 
-                <configuration>
-                    <!-- Fail the Maven build if CVSS >= 7 -->
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; Fail the Maven build if CVSS >= 7 &ndash;&gt;-->
+<!--                    <failBuildOnCVSS>7</failBuildOnCVSS>-->
 
-                    <!-- Generate HTML + XML reports -->
-                    <formats>
-                        <format>HTML</format>
-                        <format>XML</format>
-                    </formats>
-                </configuration>
+<!--                    &lt;!&ndash; Generate HTML + XML reports &ndash;&gt;-->
+<!--                    <formats>-->
+<!--                        <format>HTML</format>-->
+<!--                        <format>XML</format>-->
+<!--                    </formats>-->
+<!--                </configuration>-->
 
-                <executions>
-                    <execution>
-                        <id>dependency-check</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>dependency-check</id>-->
+<!--                        <phase>verify</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>check</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

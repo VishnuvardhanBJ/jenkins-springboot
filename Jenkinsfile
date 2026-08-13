@@ -124,19 +124,53 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh '''
-                    docker rm -f springboot-app || true
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        docker exec app-server sh -c "
+                            echo '$DOCKER_PASSWORD' | docker login \
+                                -u '$DOCKER_USERNAME' \
+                                --password-stdin
+                        "
 
-                    docker run -d --name springboot-app -p 8081:8090 jenkins-springboot:${BUILD_NUMBER}
+                        docker exec app-server sh -c "
+                            docker pull $DOCKER_IMAGE
+                        "
 
-                    sleep 10
+                        docker exec app-server sh -c "
+                            docker rm -f springboot-app || true
+                        "
 
-                    docker ps --filter "name=springboot-app"
-
-                    docker logs springboot-app
-                '''
+                        docker exec app-server sh -c "
+                            docker run -d \
+                                --name springboot-app \
+                                -p 8090:8090 \
+                                $DOCKER_IMAGE
+                        "
+                    '''
+                }
             }
         }
+//         stage('Deploy') {
+//             steps {
+//                 sh '''
+//                     docker rm -f springboot-app || true
+//
+//                     docker run -d --name springboot-app -p 8081:8090 jenkins-springboot:${BUILD_NUMBER}
+//
+//                     sleep 10
+//
+//                     docker ps --filter "name=springboot-app"
+//
+//                     docker logs springboot-app
+//                 '''
+//             }
+//         }
 
 //
 //         stage('Container Security Scan') {
