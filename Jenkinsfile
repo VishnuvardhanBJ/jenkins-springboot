@@ -18,6 +18,7 @@ pipeline {
     environment {
         APP_NAME = 'jenkins-springboot'
         IMAGE_TAG = "${BUILD_NUMBER}"
+        DOCKER_IMAGE = "vishnuvardhanbj/jenkins-springboot:${BUILD_NUMBER}"
     }
 
     stages {
@@ -96,7 +97,28 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh "docker build -t jenkins-springboot:${BUILD_NUMBER} ."
+//                 sh "docker build -t jenkins-springboot:${BUILD_NUMBER} ."
+                sh "docker build -t ${APP_NAME}:${IMAGE_TAG} -t ${DOCKER_IMAGE} ."
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-credentials',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+                        docker push "$DOCKER_IMAGE"
+
+                        docker logout
+                    '''
+                }
             }
         }
 
@@ -127,7 +149,6 @@ pipeline {
     post {
         success {
             echo "Docker ${APP_NAME}:${IMAGE_TAG} runs successfully."
-               echo "Pipeline built successfully"
         }
 
         failure {
